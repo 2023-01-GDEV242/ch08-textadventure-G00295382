@@ -58,6 +58,9 @@ public class Game
         lab.setExit("east", office);
 
         office.setExit("west", lab);
+        
+        // add items
+        outside.addItem("Stick", "weapon");
 
         currentRoom = outside;  // start game outside
     }
@@ -120,6 +123,10 @@ public class Game
             case EAT:
                 eat(command);
                 break;
+                
+            case INVENTORY:
+                player.ListInventory();
+                break;
 
             case QUIT:
                 wantToQuit = quit(command);
@@ -179,19 +186,8 @@ public class Game
             System.out.println("Eat what?");
             return;
         }
-
-        String item = command.getSecondWord();
-
         // Attempt to eat the item
-        player.tryeat(item);
-
-        //if (nextRoom == null) {
-            //System.out.println("There is no door!");
-        //}
-        //else {
-            //currentRoom = nextRoom;
-            //System.out.println(currentRoom.getLongDescription());
-        //}
+        player.tryeat(player.findItem(command.getSecondWord()));
     }
 
     /** 
