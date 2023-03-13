@@ -19,6 +19,7 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
+    private Player player;
         
     /**
      * Create the game and initialise its internal map.
@@ -27,6 +28,7 @@ public class Game
     {
         createRooms();
         parser = new Parser();
+        player = new Player();
     }
 
     /**
@@ -114,6 +116,10 @@ public class Game
             case GO:
                 goRoom(command);
                 break;
+                
+            case EAT:
+                eat(command);
+                break;
 
             case QUIT:
                 wantToQuit = quit(command);
@@ -161,7 +167,31 @@ public class Game
         else {
             currentRoom = nextRoom;
             System.out.println(currentRoom.getLongDescription());
+            //drain hunger
+            player.hungry();
         }
+    }
+    
+    private void eat(Command command)
+    {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Eat what?");
+            return;
+        }
+
+        String item = command.getSecondWord();
+
+        // Attempt to eat the item
+        player.tryeat(item);
+
+        //if (nextRoom == null) {
+            //System.out.println("There is no door!");
+        //}
+        //else {
+            //currentRoom = nextRoom;
+            //System.out.println(currentRoom.getLongDescription());
+        //}
     }
 
     /** 

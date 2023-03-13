@@ -29,6 +29,14 @@ public class CommandWords
             }
         }
     }
+    
+    public void list()
+    {
+        System.out.println("The valid commands are : ");
+        validCommands.forEach((key, value) -> {
+          System.out.println(key);
+        });
+    }
 
     /**
      * Find the CommandWord associated with a command word.
