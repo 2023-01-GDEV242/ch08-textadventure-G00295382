@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  * Manages the player's inventory, hunger, and health
@@ -8,14 +8,17 @@ import java.util.HashMap;
 public class Player
 {
     // instance variables - replace the example below with your own
-    private HashMap<String, String> Inventory = new HashMap<String, String>();
+    private ArrayList<Item> Inventory;
     private int hunger;
     private int health;
 
     public Player()
     {
-        Inventory.put("Apple", "e");
-        Inventory.put("Rock", "i");
+        Inventory = new ArrayList<Item>();
+        Item apple = new Item("apple", "edible", 0, 0);
+        Item knife = new Item("knife", "weapon", 3, 10);
+        Inventory.add(apple);
+        Inventory.add(knife);
         hunger = 15;
         health = 5;
     }
@@ -23,36 +26,37 @@ public class Player
     public void ListInventory()
     {
         System.out.println("Your inventory contains : ");
-        Inventory.forEach((key, value) -> {
-          System.out.println(key);
-        });
+        for(Item item : Inventory) {
+            System.out.println(item.getName());
+        }
     }
     
-    public boolean checkForItem(String item)
+    public boolean checkForItem(Item item)
     {
-        String citem = Inventory.get(item);
-        if (citem != null) {
+        if (Inventory.contains(item)) {
             return true;
         } else {
             return false;
         }
     }
     
-    public boolean checkEdible(String item)
+    public boolean checkEdible(Item item)
     {
-        String isEdible = Inventory.get(item);
-        if (isEdible == "e") {
+        String isEdible = item.getType();
+        if (isEdible == "edible") {
             return true;
         } else {
             return false;
         }
     }
     
-    public void tryeat(String item)
+    public void tryeat(Item item)
     {
+        //check if item exists
         boolean exists = checkForItem(item);
         boolean edible;
         if (exists == true) {
+            //check if item is edible
             edible = checkEdible(item);
             if (edible == true) {
                 eat(item);
@@ -64,11 +68,11 @@ public class Player
         }
     }
     
-    private void eat(String item)
+    private void eat(Item item)
     {
         Inventory.remove(item);
         hunger += 7;
-        System.out.println("You have eaten a(n) " + item);
+        System.out.println("You have eaten a(n) " + item.getName());
         if (hunger <= 7) {
             System.out.println("You are still hungry");
         } else {
@@ -85,5 +89,16 @@ public class Player
             System.out.println("You are starving. Find food.");
             health -= 1;
         }
+    }
+    
+    //converts string to item
+    public Item findItem(String name)
+    {
+        for(Item fitem : Inventory) {
+            if(fitem.getName().equals(name)) {
+                return fitem;
+            }
+        }
+        return null;
     }
 }
