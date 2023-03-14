@@ -10,16 +10,18 @@ public class Item
     // instance variables - replace the example below with your own
     private String name;
     private String type;
+    private String description;
     private int damage;
     private int durability;
 
     /**
      * Constructor for objects of class Item
      */
-    public Item(String name, String type, int damage, int durability)
+    public Item(String name, String type, String description, int damage, int durability)
     {
         this.name = name;
         this.type = type;
+        this.description = description;
         this.damage = damage;
         this.durability = durability;
     }
@@ -32,6 +34,11 @@ public class Item
     public String getType()
     {
         return type;
+    }
+    
+    public String getDescription()
+    {
+        return description;
     }
     
     public int getDamage()

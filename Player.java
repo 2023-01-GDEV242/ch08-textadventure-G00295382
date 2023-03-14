@@ -40,6 +40,11 @@ public class Player
         }
     }
     
+    public ArrayList<Item> inventoryArray()
+    {
+        return Inventory;
+    }
+    
     public boolean checkForItem(Item item)
     {
         if (Inventory.contains(item)) {

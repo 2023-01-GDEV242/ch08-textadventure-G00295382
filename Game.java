@@ -29,8 +29,8 @@ public class Game
     public Game() 
     {
         //create items
-        apple = new Item("apple", "edible", 0, 0);
-        knife = new Item("knife", "weapon", 3, 10);
+        apple = new Item("apple", "edible", "A big red apple, yummy.", 0, 0);
+        knife = new Item("knife", "weapon", "A dull kitchen knife", 3, 10);
         
         createRooms();
         parser = new Parser();
@@ -141,6 +141,10 @@ public class Game
             case SEARCH:
                 search();
                 break;
+                
+            case EXAMINE:
+                examine(command);
+                break;
 
             case QUIT:
                 wantToQuit = quit(command);
@@ -229,6 +233,29 @@ public class Game
             System.out.println("You could not find a(n) " + phrase);
         } else {
             currentRoom.removeItem(toRemove);
+        }
+    }
+    
+    private void examine(Command command)
+    {
+        Item toExamine = null;
+        String phrase = command.getSecondWord().toString();
+        
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Examine what?");
+            return;
+        }
+        
+        for(Item eitem : player.inventoryArray()) {
+            if(eitem.getName().equals(phrase)) {
+                System.out.println(eitem.getDescription());
+                toExamine = eitem;
+            }
+        }
+        
+        if (toExamine == null) {
+            System.out.println("You could not find a(n) " + phrase + " in your inventory");
         }
     }
     
