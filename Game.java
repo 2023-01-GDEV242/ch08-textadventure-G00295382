@@ -20,7 +20,7 @@ public class Game
     private Parser parser;
     private Room currentRoom;
     private Player player;
-    //define items as class variables
+    //define items as class variables so they can be used between methods
     Item apple, knife;
         
     /**
@@ -141,6 +141,10 @@ public class Game
                 
             case SEARCH:
                 search();
+                break;
+                
+            case LOOK:
+                System.out.println(currentRoom.getLongDescription());
                 break;
                 
             case EXAMINE:
