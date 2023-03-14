@@ -11,12 +11,14 @@ public class Player
     private ArrayList<Item> Inventory;
     private int hunger;
     private int health;
+    private int wc;
 
     public Player()
     {
         Inventory = new ArrayList<Item>();
         hunger = 15;
         health = 5;
+        wc = 2;
     }
     
     public void obtain(Item item)
@@ -103,6 +105,16 @@ public class Player
             System.out.println("You are starving. Find food.");
             health -= 1;
         }
+    }
+    
+    public int weightClass()
+    {
+        return wc;
+    }
+    
+    public void strength()
+    {
+        wc += 2;
     }
     
     //converts string to item

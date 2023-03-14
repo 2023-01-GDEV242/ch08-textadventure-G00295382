@@ -13,17 +13,19 @@ public class Item
     private String description;
     private int damage;
     private int durability;
+    private int weight;
 
     /**
      * Constructor for objects of class Item
      */
-    public Item(String name, String type, String description, int damage, int durability)
+    public Item(String name, String type, String description, int damage, int durability, int weight)
     {
         this.name = name;
         this.type = type;
         this.description = description;
         this.damage = damage;
         this.durability = durability;
+        this.weight = weight;
     }
     
     public String getName()
@@ -49,6 +51,11 @@ public class Item
     public int getDurability()
     {
         return durability;
+    }
+    
+    public int getWeight()
+    {
+        return weight;
     }
     
     public void damaged()

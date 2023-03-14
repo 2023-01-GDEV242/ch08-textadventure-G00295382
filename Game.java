@@ -29,8 +29,8 @@ public class Game
     public Game() 
     {
         //create items
-        apple = new Item("apple", "edible", "A big red apple, yummy.", 0, 0);
-        knife = new Item("knife", "weapon", "A dull kitchen knife", 3, 10);
+        apple = new Item("apple", "edible", "A big red apple, yummy.", 0, 0, 0);
+        knife = new Item("knife", "weapon", "A dull kitchen knife", 3, 10, 1);
         
         createRooms();
         parser = new Parser();
@@ -67,6 +67,7 @@ public class Game
         
         // add items
         outside.addItem(apple);
+        outside.addItem(knife);
 
         currentRoom = outside;  // start game outside
     }
@@ -211,6 +212,7 @@ public class Game
     private void pickup(Command command)
     {
         Item toRemove = null;
+        boolean heavy = false;
         String phrase = command.getSecondWord().toString();
 
         if(!command.hasSecondWord()) {
@@ -223,14 +225,22 @@ public class Game
         //if it does, give the object to the player and send a message
         for(Item pitem : currentRoom.itemArray()) {
             if(pitem.getName().equals(phrase)) {
-                player.obtain(pitem);
-                System.out.println("Picked up a(n) " + pitem.getName());
-                toRemove = pitem;
+                if(player.weightClass() >= pitem.getWeight())
+                {
+                    player.obtain(pitem);
+                    System.out.println("Picked up a(n) " + pitem.getName());
+                    toRemove = pitem;
+                } else {
+                    System.out.println("The " + pitem.getName() + " is too heavy for you");
+                    heavy = true;
+                }
             }
         }
         //remove elements after for-each to avoid concurrent modification exception
         if (toRemove == null) {
-            System.out.println("You could not find a(n) " + phrase);
+            if(heavy == false) {
+                System.out.println("You could not find a(n) " + phrase);
+            }
         } else {
             currentRoom.removeItem(toRemove);
         }
