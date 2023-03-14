@@ -20,12 +20,18 @@ public class Game
     private Parser parser;
     private Room currentRoom;
     private Player player;
+    //define items as class variables
+    Item apple, knife;
         
     /**
      * Create the game and initialise its internal map.
      */
     public Game() 
     {
+        //create items
+        apple = new Item("apple", "edible", 0, 0);
+        knife = new Item("knife", "weapon", 3, 10);
+        
         createRooms();
         parser = new Parser();
         player = new Player();
@@ -60,7 +66,7 @@ public class Game
         office.setExit("west", lab);
         
         // add items
-        outside.addItem("Stick", "weapon");
+        outside.addItem(apple);
 
         currentRoom = outside;  // start game outside
     }
@@ -127,6 +133,14 @@ public class Game
             case INVENTORY:
                 player.ListInventory();
                 break;
+                
+            case PICKUP:
+                pickup(command);
+                break;
+                
+            case SEARCH:
+                search();
+                break;
 
             case QUIT:
                 wantToQuit = quit(command);
@@ -188,6 +202,39 @@ public class Game
         }
         // Attempt to eat the item
         player.tryeat(player.findItem(command.getSecondWord()));
+    }
+    
+    private void pickup(Command command)
+    {
+        Item toRemove = null;
+        String phrase = command.getSecondWord().toString();
+
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Pickup what?");
+            return;
+        }
+        
+        //run through each object in the snapshot array of the current room, checking if its name matches the second command word
+        //if it does, give the object to the player and send a message
+        for(Item pitem : currentRoom.itemArray()) {
+            if(pitem.getName().equals(phrase)) {
+                player.obtain(pitem);
+                System.out.println("Picked up a(n) " + pitem.getName());
+                toRemove = pitem;
+            }
+        }
+        //remove elements after for-each to avoid concurrent modification exception
+        if (toRemove == null) {
+            System.out.println("You could not find a(n) " + phrase);
+        } else {
+            currentRoom.removeItem(toRemove);
+        }
+    }
+    
+    private void search()
+    {
+        currentRoom.listItems();
     }
 
     /** 

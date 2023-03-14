@@ -15,12 +15,18 @@ public class Player
     public Player()
     {
         Inventory = new ArrayList<Item>();
-        Item apple = new Item("apple", "edible", 0, 0);
-        Item knife = new Item("knife", "weapon", 3, 10);
-        Inventory.add(apple);
-        Inventory.add(knife);
         hunger = 15;
         health = 5;
+    }
+    
+    public void obtain(Item item)
+    {
+        Inventory.add(item);
+    }
+    
+    public void lose(Item item)
+    {
+        Inventory.remove(item);
     }
     
     public void ListInventory()
@@ -28,6 +34,9 @@ public class Player
         System.out.println("Your inventory contains : ");
         for(Item item : Inventory) {
             System.out.println(item.getName());
+        }
+        if(Inventory.size() == 0) {
+            System.out.println("nothing");
         }
     }
     
