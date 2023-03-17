@@ -29,6 +29,11 @@ public class Enemy
         loot.add(item);
     }
     
+    public ArrayList<Item> listLoot()
+    {
+        return loot;
+    }
+    
     public String getName()
     {
         return name;

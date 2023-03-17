@@ -22,7 +22,7 @@ public class Game
     private Player player;
     //define items as class variables so they can be used between methods
     Item apple, knife, stick;
-    Enemy zombie1, zombie2;
+    Enemy zombie1;
         
     /**
      * Create the game and initialise its internal map.
@@ -36,7 +36,7 @@ public class Game
         
         //create enemies
         zombie1 = new Enemy("zombie", "abomination", 2, 1);
-        zombie2 = new Enemy("zombie", "abomination", 2, 1);
+        zombie1.addLoot(apple);
         
         createRooms();
         parser = new Parser();
@@ -63,7 +63,6 @@ public class Game
         
         // add enemies
         w1.addEnemy(zombie1);
-        w1.addEnemy(zombie2);
 
         currentRoom = w1;  // start game outside
     }
@@ -326,13 +325,11 @@ public class Game
                     //attack enemy
                     enemy.attacked(player.getHolding());
                     toAttack = enemy;
-                    //kill enemy if 0 health
-                    if(toAttack.getHealth() <= 0) {
-                        currentRoom.removeEnemy(toAttack);
-                        System.out.println("The " + toAttack.getName() + " has died!");
-                    }
                     //damage player weapon
                     player.damageItem(player.getHolding());
+                    //can't have multiple enemies with the same name in the same room without return statement here
+                    //but that feature was janky anyway
+                    //return;
                 } else {
                     System.out.println("You aren't holding anything!");
                     return;
@@ -340,11 +337,23 @@ public class Game
                 //get attacked by every enemy in the room
             }
             //damage player
-            player.attackedBy(enemy);
+            //fixed this by removing return in first if statement
+            if(enemy.getHealth() > 0) {
+                player.attackedBy(enemy);
+            }
         }
         
         if (toAttack == null) {
             System.out.println("You could not find a(n) " + phrase + " in the current room");
+        } else if (toAttack.getHealth() <= 0) { //kill enemy if 0 health
+            System.out.println("The " + toAttack.getName() + " has died!");
+            System.out.println("You received : ");
+            for(Item loot : toAttack.listLoot()) {
+                System.out.println("- " + loot.getName());
+                player.obtain(loot);
+            }
+            currentRoom.removeEnemy(toAttack);
+                        
         }
     }
 
