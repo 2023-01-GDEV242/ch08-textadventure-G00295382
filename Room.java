@@ -22,6 +22,7 @@ public class Room
     private String description;
     private HashMap<String, Room> exits;        // stores exits of this room.
     private ArrayList<Item> items;      // stores items
+    private ArrayList<Enemy> enemies;   // stores enemies
 
     /**
      * Create a room described "description". Initially, it has
@@ -34,6 +35,7 @@ public class Room
         this.description = description;
         exits = new HashMap<>();
         items = new ArrayList<>();
+        enemies = new ArrayList<>();
     }
 
     /**
@@ -44,6 +46,16 @@ public class Room
     public void setExit(String direction, Room neighbor) 
     {
         exits.put(direction, neighbor);
+    }
+    
+    public void addEnemy(Enemy enemy)
+    {
+        enemies.add(enemy);
+    }
+    
+    public void removeEnemy(Enemy enemy)
+    {
+        enemies.remove(enemy);
     }
 
     public void addItem(Item item)
@@ -68,6 +80,12 @@ public class Room
     public ArrayList<Item> itemArray()
     {
         return items;
+    }
+    
+    //same for enemy array
+    public ArrayList<Enemy> enemyArray()
+    {
+        return enemies;
     }
 
     /**

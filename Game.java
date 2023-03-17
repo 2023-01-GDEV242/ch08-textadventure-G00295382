@@ -21,7 +21,8 @@ public class Game
     private Room currentRoom;
     private Player player;
     //define items as class variables so they can be used between methods
-    Item apple, knife;
+    Item apple, knife, stick;
+    Enemy zombie1, zombie2;
         
     /**
      * Create the game and initialise its internal map.
@@ -31,6 +32,11 @@ public class Game
         //create items
         apple = new Item("apple", "edible", "A big red apple, yummy.", 0, 0, 0);
         knife = new Item("knife", "weapon", "A dull kitchen knife", 3, 10, 1);
+        stick = new Item("stick", "weapon", "A thin stick", 1, 2, 1);
+        
+        //create enemies
+        zombie1 = new Enemy("zombie", "abomination", 2, 1);
+        zombie2 = new Enemy("zombie", "abomination", 2, 1);
         
         createRooms();
         parser = new Parser();
@@ -41,35 +47,25 @@ public class Game
      * Create all the rooms and link their exits together.
      */
     private void createRooms()
-    {
-        Room outside, theater, pub, lab, office;
+    {   
+        Room w1, w2, w3, w4;
       
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        w1 = new Room("A white room");
+        w2 = new Room("A white room");
         
         // initialise room exits
-        outside.setExit("east", theater);
-        outside.setExit("south", lab);
-        outside.setExit("west", pub);
-
-        theater.setExit("west", outside);
-
-        pub.setExit("east", outside);
-
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
-
-        office.setExit("west", lab);
+        
+        //progresses e/s
         
         // add items
-        outside.addItem(apple);
-        outside.addItem(knife);
+        w1.addItem(stick);
+        
+        // add enemies
+        w1.addEnemy(zombie1);
+        w1.addEnemy(zombie2);
 
-        currentRoom = outside;  // start game outside
+        currentRoom = w1;  // start game outside
     }
 
     /**
@@ -149,6 +145,14 @@ public class Game
                 
             case EXAMINE:
                 examine(command);
+                break;
+                
+            case HOLD:
+                hold(command);
+                break;
+            
+            case ATTACK:
+                attack(command);
                 break;
 
             case QUIT:
@@ -253,13 +257,14 @@ public class Game
     private void examine(Command command)
     {
         Item toExamine = null;
-        String phrase = command.getSecondWord().toString();
         
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
             System.out.println("Examine what?");
             return;
         }
+        
+        String phrase = command.getSecondWord().toString();
         
         for(Item eitem : player.inventoryArray()) {
             if(eitem.getName().equals(phrase)) {
@@ -276,6 +281,71 @@ public class Game
     private void search()
     {
         currentRoom.listItems();
+    }
+    
+    private void hold(Command command)
+    {
+        Item isHolding = null;
+        
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Hold what?");
+            return;
+        }
+        
+        String phrase = command.getSecondWord().toString();
+        
+        for(Item hitem : player.inventoryArray()) {
+            if(hitem.getName().equals(phrase)) {
+                player.hold(hitem);
+                isHolding = hitem;
+                System.out.println("You are now holding the " + hitem.getName());
+            }
+        }
+        
+        if (isHolding == null) {
+            System.out.println("You could not find a(n) " + phrase + " in your inventory");
+        }
+    }
+    
+    private void attack(Command command)
+    {
+        Enemy toAttack = null;
+        String phrase = command.getSecondWord().toString();
+        
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Attack who?");
+            return;
+        }
+        
+        for(Enemy enemy : currentRoom.enemyArray()) {
+            if(enemy.getName().equals(phrase)) {
+                if(player.getHolding() != null)
+                {
+                    //attack enemy
+                    enemy.attacked(player.getHolding());
+                    toAttack = enemy;
+                    //kill enemy if 0 health
+                    if(toAttack.getHealth() <= 0) {
+                        currentRoom.removeEnemy(toAttack);
+                        System.out.println("The " + toAttack.getName() + " has died!");
+                    }
+                    //damage player weapon
+                    player.damageItem(player.getHolding());
+                } else {
+                    System.out.println("You aren't holding anything!");
+                    return;
+                }
+                //get attacked by every enemy in the room
+            }
+            //damage player
+            player.attackedBy(enemy);
+        }
+        
+        if (toAttack == null) {
+            System.out.println("You could not find a(n) " + phrase + " in the current room");
+        }
     }
 
     /** 

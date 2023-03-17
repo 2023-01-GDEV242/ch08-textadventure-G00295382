@@ -12,10 +12,12 @@ public class Player
     private int hunger;
     private int health;
     private int wc;
+    private Item holding;
 
     public Player()
     {
         Inventory = new ArrayList<Item>();
+        holding = null;
         hunger = 15;
         health = 5;
         wc = 2;
@@ -117,6 +119,16 @@ public class Player
         wc += 2;
     }
     
+    public void hold(Item item)
+    {
+        holding = item;
+    }
+    
+    public Item getHolding()
+    {
+        return holding;
+    }
+    
     //converts string to item
     public Item findItem(String name)
     {
@@ -126,5 +138,23 @@ public class Player
             }
         }
         return null;
+    }
+    
+    public void attackedBy(Enemy enemy)
+    {
+        health -= enemy.getDamage();
+        System.out.println("Attacked by " + enemy.getName() + "! You lost " + enemy.getDamage() + " hitpoints!");
+    }
+    
+    public void damageItem(Item item)
+    {
+        item.damaged();
+        if(item.getDurability() <= 0) {
+            if(holding == item) {
+                holding = null;
+            }
+            System.out.println("Your " + item.getName() + " broke!");
+            lose(item);
+        }
     }
 }
