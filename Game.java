@@ -235,6 +235,10 @@ public class Game
             case EVADE:
                 evade();
                 break;
+                
+            case DROP:
+                drop(command);
+                break;
 
             case QUIT:
                 wantToQuit = quit(command);
@@ -350,10 +354,8 @@ public class Game
             currentRoom.removeItem(toRemove);
         }
         
-        //enemy attack phase : player is attacked by random enemy in the room
-        Enemy toAttack = null;
-        int rand1 = rand.nextInt(currentRoom.enemyArray().size());
-        player.attackedBy(currentRoom.enemyArray().get(rand1));
+        //enemy attack phase
+        enemyPhase();
     }
     
     private void examine(Command command)
@@ -464,6 +466,36 @@ public class Game
         }
     }
     
+    private void drop(Command command) {
+        Item toDrop = null;
+        String phrase = command.getSecondWord().toString();
+        
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Drop what?");
+            return;
+        }
+        
+        for(Item ditem : player.inventoryArray())
+        {
+            if(ditem.getName().equals(phrase)) {
+                //drop item and place it in room
+                System.out.println("You dropped the " + ditem.getName());
+                toDrop = ditem;
+                currentRoom.addItem(ditem);
+            }
+        }
+        
+        if(toDrop != null) {
+            player.lose(toDrop);
+        } else {
+            System.out.println("You could not find a(n) " + phrase + " in your inventory");
+        }
+        
+        //enemy attack phase
+        enemyPhase();
+    }
+    
     private void evade()
     {
         if(currentRoom.enemyArray().size() > 0) {
@@ -471,6 +503,13 @@ public class Game
         } else {
             System.out.println("Nothing to evade...");
         }
+    }
+    
+    private void enemyPhase()
+    {
+        //enemy attack phase : player is attacked by random enemy in the room
+        int rand1 = rand.nextInt(currentRoom.enemyArray().size());
+        player.attackedBy(currentRoom.enemyArray().get(rand1));
     }
 
     /** 
