@@ -54,9 +54,10 @@ public class Enemy
         return damage;
     }
     
-    public void attacked(Item item)
+    public void attacked(Item item, int adr)
     {
-        health -= item.getDamage();
-        System.out.println("The " + name + " lost " + item.getDamage() + " hitpoints!");
+        int pdamage = item.getDamage() + adr;
+        health -= pdamage;
+        System.out.println("The " + name + " lost " + pdamage + " hitpoints!");
     }
 }

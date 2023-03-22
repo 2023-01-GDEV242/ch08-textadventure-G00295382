@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  *  This class is the main class of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.  Users 
@@ -20,9 +22,11 @@ public class Game
     private Parser parser;
     private Room currentRoom;
     private Player player;
+    Random rand;
     //define items as class variables so they can be used between methods
-    Item apple, knife, stick;
-    Enemy zombie1;
+    Item rock, spear, fruit, batflycorpse;
+    Item silverpearl;
+    Enemy batfly, greenlizard, bluelizard;
         
     /**
      * Create the game and initialise its internal map.
@@ -30,17 +34,24 @@ public class Game
     public Game() 
     {
         //create items
-        apple = new Item("apple", "edible", "A big red apple, yummy.", 0, 0, 0);
-        knife = new Item("knife", "weapon", "A dull kitchen knife", 3, 10, 1);
-        stick = new Item("stick", "weapon", "A thin stick", 1, 2, 1);
+        rock = new Item("rock", "weapon", "It's a rock", 1, 2, 0);
+        spear = new Item("spear", "weapon", "It's a piece of sharpened rebar", 3, 10, 1);
+        fruit = new Item("fruit", "edible", "lore", 0, 0, 0);
+        batflycorpse = new Item("batfly", "edible", "lore", 0, 0, 0);
+        
+        silverpearl = new Item("silverpearl", "collectible", "lore", 0, 0, 0);
         
         //create enemies
-        zombie1 = new Enemy("zombie", "abomination", 2, 1);
-        zombie1.addLoot(apple);
+        batfly = new Enemy("batfly", "looks tasty", 1, 0);
+        batfly.addLoot(batflycorpse);
+        //batfly.addLoot(batflycorpse);
+        greenlizard = new Enemy("greenlizard", "dont mess with them", 10, 1);
+        bluelizard = new Enemy("bluelizard", "quite vulnerable", 3, 2);
         
         createRooms();
         parser = new Parser();
         player = new Player();
+        rand = new Random();
     }
 
     /**
@@ -48,23 +59,90 @@ public class Game
      */
     private void createRooms()
     {   
-        Room w1, w2, w3, w4;
+        Room outskirts, industrial, farmarrays, skyislands, subterranean, filtration, drainage, garbage, shoreline, moon, crypts, citadel, chimney, wall, pebbles, depths, ascension;
       
         // create the rooms
-        w1 = new Room("A white room");
-        w2 = new Room("A white room");
+        outskirts = new Room("You find yourself in a desolate, grassy city.");
+        industrial = new Room("A white room");
+        farmarrays = new Room("A white room");
+        skyislands = new Room("A white room");
+        subterranean = new Room("A white room");
+        filtration = new Room("A white room");
+        drainage = new Room("A white room");
+        garbage = new Room("A white room");
+        shoreline = new Room("A white room");
+        moon = new Room("A white room");
+        crypts = new Room("A white room");
+        citadel = new Room("A white room");
+        chimney = new Room("A white room");
+        wall = new Room("A white room");
+        pebbles = new Room("A white room");
+        depths = new Room("A white room", true);
+        ascension = new Room("room");
         
         // initialise room exits
+        outskirts.setExit("left", farmarrays);
+        outskirts.setExit("right", industrial);
+        outskirts.setExit("down", drainage);
         
-        //progresses e/s
+        industrial.setExit("left", outskirts);
+        industrial.setExit("up", chimney);
+        industrial.setExit("right", citadel);
+        
+        farmarrays.setExit("right", outskirts);
+        farmarrays.setExit("up", skyislands);
+        farmarrays.setExit("down", subterranean);
+        
+        skyislands.setExit("down", farmarrays);
+        skyislands.setExit("right", chimney);
+        
+        subterranean.setExit("up", farmarrays);
+        subterranean.setExit("right", shoreline);
+        
+        filtration.setExit("down", depths);
+        filtration.setExit("right", drainage);
+        
+        drainage.setExit("left", filtration);
+        drainage.setExit("right", garbage);
+        drainage.setExit("up", outskirts);
+        
+        garbage.setExit("left", drainage);
+        garbage.setExit("up", industrial);
+        garbage.setExit("right", shoreline);
+        
+        shoreline.setExit("left", garbage);
+        shoreline.setExit("right", moon);
+        shoreline.setExit("down", subterranean);
+        shoreline.setExit("up", citadel);
+        
+        moon.setExit("left", shoreline);
+        
+        citadel.setExit("right", shoreline);
+        citadel.setExit("down", crypts);
+        citadel.setExit("left", industrial);
+        
+        chimney.setExit("down", industrial);
+        chimney.setExit("left", skyislands);
+        chimney.setExit("right", wall);
+        
+        wall.setExit("down", crypts);
+        wall.setExit("left", chimney);
+        wall.setExit("up", pebbles);
+        
+        pebbles.setExit("left", wall);
+        
+        depths.setExit("down", ascension);
+        
         
         // add items
-        w1.addItem(stick);
+        outskirts.addItem(silverpearl);
+        outskirts.addItem(rock);
         
         // add enemies
-        w1.addEnemy(zombie1);
+        outskirts.addEnemy(greenlizard);
+        outskirts.addEnemy(bluelizard);
 
-        currentRoom = w1;  // start game outside
+        currentRoom = outskirts;  // start game outside
     }
 
     /**
@@ -146,12 +224,16 @@ public class Game
                 examine(command);
                 break;
                 
-            case HOLD:
-                hold(command);
+            case WIELD:
+                wield(command);
                 break;
             
             case ATTACK:
                 attack(command);
+                break;
+                
+            case EVADE:
+                evade();
                 break;
 
             case QUIT:
@@ -198,10 +280,24 @@ public class Game
             System.out.println("There is no door!");
         }
         else {
-            currentRoom = nextRoom;
-            System.out.println(currentRoom.getLongDescription());
-            //drain hunger
-            player.hungry();
+            if (nextRoom.getLocked() == false)
+            {
+                currentRoom = nextRoom;
+                System.out.println(currentRoom.getLongDescription());
+                //drain hunger
+                player.hungry();
+                player.adrReset();
+            } else {
+                if (player.getKarma() >= 10) {
+                    currentRoom = nextRoom;
+                    System.out.println("A force dissipates");
+                    System.out.println(currentRoom.getLongDescription());
+                    //drain hunger
+                    player.hungry();                    
+                } else {
+                System.out.println("A force prevents you from entering");
+                }
+            }
         }
     }
     
@@ -214,6 +310,7 @@ public class Game
         }
         // Attempt to eat the item
         player.tryeat(player.findItem(command.getSecondWord()));
+        player.adrDecay();
     }
     
     private void pickup(Command command)
@@ -235,6 +332,7 @@ public class Game
                 if(player.weightClass() >= pitem.getWeight())
                 {
                     player.obtain(pitem);
+                    player.adrDecay();
                     System.out.println("Picked up a(n) " + pitem.getName());
                     toRemove = pitem;
                 } else {
@@ -251,6 +349,11 @@ public class Game
         } else {
             currentRoom.removeItem(toRemove);
         }
+        
+        //enemy attack phase : player is attacked by random enemy in the room
+        Enemy toAttack = null;
+        int rand1 = rand.nextInt(currentRoom.enemyArray().size());
+        player.attackedBy(currentRoom.enemyArray().get(rand1));
     }
     
     private void examine(Command command)
@@ -279,10 +382,10 @@ public class Game
     
     private void search()
     {
-        currentRoom.listItems();
+        currentRoom.searching();
     }
     
-    private void hold(Command command)
+    private void wield(Command command)
     {
         Item isHolding = null;
         
@@ -298,7 +401,7 @@ public class Game
             if(hitem.getName().equals(phrase)) {
                 player.hold(hitem);
                 isHolding = hitem;
-                System.out.println("You are now holding the " + hitem.getName());
+                System.out.println("You are now wielding the " + hitem.getName());
             }
         }
         
@@ -323,10 +426,14 @@ public class Game
                 if(player.getHolding() != null)
                 {
                     //attack enemy
-                    enemy.attacked(player.getHolding());
+                    enemy.attacked(player.getHolding(), player.adrLevel());
                     toAttack = enemy;
                     //damage player weapon
                     player.damageItem(player.getHolding());
+                    player.adrDecay();
+                    
+                    //enemy attack phase
+                    player.attackedBy(enemy);
                     //can't have multiple enemies with the same name in the same room without return statement here
                     //but that feature was janky anyway
                     //return;
@@ -338,22 +445,31 @@ public class Game
             }
             //damage player
             //fixed this by removing return in first if statement
-            if(enemy.getHealth() > 0) {
-                player.attackedBy(enemy);
-            }
         }
         
         if (toAttack == null) {
             System.out.println("You could not find a(n) " + phrase + " in the current room");
         } else if (toAttack.getHealth() <= 0) { //kill enemy if 0 health
             System.out.println("The " + toAttack.getName() + " has died!");
-            System.out.println("You received : ");
-            for(Item loot : toAttack.listLoot()) {
-                System.out.println("- " + loot.getName());
-                player.obtain(loot);
+            //if enemy has loot, give loot
+            if(toAttack.listLoot().size() > 0) {
+                System.out.println("You received : ");
+                for(Item loot : toAttack.listLoot()) {
+                    System.out.println("- " + loot.getName());
+                    player.obtain(loot);
+                }
             }
             currentRoom.removeEnemy(toAttack);
                         
+        }
+    }
+    
+    private void evade()
+    {
+        if(currentRoom.enemyArray().size() > 0) {
+            player.evade();
+        } else {
+            System.out.println("Nothing to evade...");
         }
     }
 

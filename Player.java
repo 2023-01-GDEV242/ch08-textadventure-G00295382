@@ -12,6 +12,8 @@ public class Player
     private int hunger;
     private int health;
     private int wc;
+    private int karma;
+    private int adrenaline;
     private Item holding;
 
     public Player()
@@ -21,6 +23,8 @@ public class Player
         hunger = 15;
         health = 5;
         wc = 2;
+        karma = 1;
+        adrenaline = 0;
     }
     
     public void obtain(Item item)
@@ -119,6 +123,18 @@ public class Player
         wc += 2;
     }
     
+    public void addKarma()
+    {
+        if(karma <= 10) {
+            karma += 1;
+        }
+    }
+    
+    public void maxKarma()
+    {
+        karma = 10;
+    }
+    
     public void hold(Item item)
     {
         holding = item;
@@ -140,10 +156,52 @@ public class Player
         return null;
     }
     
+    public int getKarma()
+    {
+        return karma;
+    }
+    
+    public int adrLevel()
+    {
+        return adrenaline;
+    }
+    
     public void attackedBy(Enemy enemy)
     {
         health -= enemy.getDamage();
         System.out.println("Attacked by " + enemy.getName() + "! You lost " + enemy.getDamage() + " hitpoints!");
+    }
+    
+    public void evade()
+    {
+        if(hunger > 2) {
+            health += 4;
+            hunger -= 5;
+            System.out.println("You evaded the enemie(s)!");
+            System.out.println("You restored 4 health!");
+            if(adrenaline <= 0) {
+                adrenaline += 2;
+                System.out.println("Adrenaline bonus activated! (+" + adrenaline + " damage)");
+            }
+        } else {
+            System.out.println("You are too hungry! Cost: 5");
+        }
+    }
+    
+    public void adrDecay()
+    {
+        if(adrenaline > 0) {
+            adrenaline -= 1;
+            if(adrenaline <= 0) {
+                System.out.println("Adrenaline bonus lost..");
+            }
+        }
+    }
+    
+    public void adrReset()
+    {
+        adrenaline = 0;
+        System.out.println("Adrenaline bonus lost..");
     }
     
     public void damageItem(Item item)

@@ -23,6 +23,7 @@ public class Room
     private HashMap<String, Room> exits;        // stores exits of this room.
     private ArrayList<Item> items;      // stores items
     private ArrayList<Enemy> enemies;   // stores enemies
+    private boolean locked;
 
     /**
      * Create a room described "description". Initially, it has
@@ -33,6 +34,16 @@ public class Room
     public Room(String description) 
     {
         this.description = description;
+        locked = false;
+        exits = new HashMap<>();
+        items = new ArrayList<>();
+        enemies = new ArrayList<>();
+    }
+    
+    public Room(String description, boolean locked) 
+    {
+        this.description = description;
+        this.locked = locked;
         exits = new HashMap<>();
         items = new ArrayList<>();
         enemies = new ArrayList<>();
@@ -68,11 +79,25 @@ public class Room
         items.remove(item);
     }
     
-    public void listItems()
+    public void lock()
+    {
+        locked = true;
+    }
+    
+    public void unlock()
+    {
+        locked = false;
+    }
+    
+    public void searching()
     {
         System.out.println("After searching the room, you find it contains : ");
         for(Item item : items) {
             System.out.println(item.getName());
+        }
+        System.out.println("Along with some enemies : ");
+        for(Enemy enemy : enemies) {
+            System.out.println(enemy.getName());
         }
     }
     
@@ -105,7 +130,7 @@ public class Room
      */
     public String getLongDescription()
     {
-        return "You are " + description + ".\n" + getExitString();
+        return description + ".\n" + getExitString();
     }
 
     /**
@@ -121,6 +146,11 @@ public class Room
             returnString += " " + exit;
         }
         return returnString;
+    }
+    
+    public boolean getLocked()
+    {
+        return locked;
     }
 
     /**
