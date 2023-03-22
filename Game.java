@@ -11,19 +11,43 @@ import java.util.Random;
 
 public class Game 
 {
-    private Parser parser;
-    private Room currentRoom;
-    private Player player;
-    Random rand;
+    private static Parser parser;
+    private static Room currentRoom;
+    private static Player player;
+    static Random rand;
     //define items as class variables so they can be used between methods
-    Item rock, spear, fruit, batflycorpse;
-    Item silverpearl;
-    Enemy batfly, greenlizard, bluelizard;
+    static Item rock, spear, fruit, batflycorpse;
+    static Item silverpearl;
+    static Enemy batfly, greenlizard, bluelizard;
+    
+    public static void main(String[] args){
+        //create items
+        rock = new Item("rock", "weapon", "It's a rock", 1, 2, 0);
+        spear = new Item("spear", "weapon", "It's a piece of sharpened rebar", 3, 10, 1);
+        fruit = new Item("fruit", "edible", "lore", 0, 0, 0);
+        batflycorpse = new Item("batfly", "edible", "lore", 0, 0, 0);
+        
+        silverpearl = new Item("silverpearl", "collectible", "lore", 0, 0, 0);
+        
+        //create enemies
+        batfly = new Enemy("batfly", "looks tasty", 1, 0);
+        batfly.addLoot(batflycorpse);
+        //batfly.addLoot(batflycorpse);
+        greenlizard = new Enemy("greenlizard", "dont mess with them", 10, 1);
+        bluelizard = new Enemy("bluelizard", "quite vulnerable", 3, 2);
+        
+        createRooms();
+        parser = new Parser();
+        player = new Player();
+        rand = new Random();
+        
+        play();
+    }
         
     /**
      * Create the game and initialise its internal map.
      */
-    public Game() 
+    /*public Game() 
     {
         
         //create items
@@ -45,12 +69,12 @@ public class Game
         parser = new Parser();
         player = new Player();
         rand = new Random();
-    }
+    }*/
 
     /**
      * Create all the rooms and link their exits together.
      */
-    private void createRooms()
+    private static void createRooms()
     {   
         /**
          * This method creates all rooms within the game and places their respective items within them
@@ -146,7 +170,7 @@ public class Game
     /**
      *  Main play routine.  Loops until end of play.
      */
-    public void play() 
+    public static void play() 
     {   
         /**
          * Starts the game
@@ -167,7 +191,7 @@ public class Game
     /**
      * Print out the opening message for the player.
      */
-    private void printWelcome()
+    private static void printWelcome()
     {
         System.out.println();
         System.out.println("Welcome to the World of Zuul!");
@@ -182,7 +206,7 @@ public class Game
      * @param command The command to be processed.
      * @return true If the command ends the game, false otherwise.
      */
-    private boolean processCommand(Command command) 
+    private static boolean processCommand(Command command) 
     {
         boolean wantToQuit = false;
 
@@ -255,7 +279,7 @@ public class Game
      * Here we print some stupid, cryptic message and a list of the 
      * command words.
      */
-    private void printHelp() 
+    private static void printHelp() 
     {
         System.out.println();
         System.out.println("Your command words are:");
@@ -266,7 +290,7 @@ public class Game
      * Try to go in one direction. If there is an exit, enter the new
      * room, otherwise print an error message.
      */
-    private void goRoom(Command command) 
+    private static void goRoom(Command command) 
     {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
@@ -308,7 +332,7 @@ public class Game
      * A method called by the player, attempts to consume an item from their inventory
      * @param command the two phrases entered by the player to execute the command, in this case "eat" and the item to eat
      */
-    private void eat(Command command)
+    private static void eat(Command command)
     {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
@@ -324,7 +348,7 @@ public class Game
      * A method called by the player, attempts to pickup an item from within a room
      * @param command the two phrases entered by the player to execute the command, in this case "pickup" and the item to pickup
      */
-    private void pickup(Command command)
+    private static void pickup(Command command)
     {
         Item toRemove = null;
         boolean heavy = false;
@@ -369,7 +393,7 @@ public class Game
      * A method called by the player, attempts to print the description of the item requested by the player
      * @param command the two phrases entered by the player to execute the command, in this case "examine" and the item to examine
      */
-    private void examine(Command command)
+    private static void examine(Command command)
     {
         Item toExamine = null;
         
@@ -397,7 +421,7 @@ public class Game
      * A method called by the player, lists all items and enemies within the room they are currently in
      * @param args Unused
      */
-    private void search()
+    private static void search()
     {
         currentRoom.searching();
     }
@@ -406,7 +430,7 @@ public class Game
      * A method called by the player, attempts to have the player wield a requested item from within their inventory
      * @param command the two phrases entered by the player to execute the command, in this case "wield" and the item to wield
      */
-    private void wield(Command command)
+    private static void wield(Command command)
     {
         Item isHolding = null;
         
@@ -437,7 +461,7 @@ public class Game
      * player's inventory
      * @param command the two phrases entered by the player to execute the command, in this case "attack" and the enemy to attack
      */
-    private void attack(Command command)
+    private static void attack(Command command)
     {
         Enemy toAttack = null;
         String phrase = command.getSecondWord().toString();
@@ -495,7 +519,7 @@ public class Game
      * A method called by the player, attempts to remove a requested item from their inventory, and add it to whichever room they are currently in
      * @param command the two phrases entered by the player to execute the command, in this case "drop" and the item to drop
      */
-    private void drop(Command command) {
+    private static void drop(Command command) {
         Item toDrop = null;
         String phrase = command.getSecondWord().toString();
         
@@ -529,7 +553,7 @@ public class Game
      * A method called by the player, recovers health and evades enemy attacks for one "turn" at the cost of hunger
      * @param args Unused
      */
-    private void evade()
+    private static void evade()
     {
         if(currentRoom.enemyArray().size() > 0) {
             player.evade();
@@ -542,7 +566,7 @@ public class Game
      * A method called by several other methods, namely drop() and pickup(), that causes a random enemy in the room to attack the player
      * @param args Unused
      */
-    private void enemyPhase()
+    private static void enemyPhase()
     {
         //enemy attack phase : player is attacked by random enemy in the room
         int rand1 = rand.nextInt(currentRoom.enemyArray().size());
@@ -554,7 +578,7 @@ public class Game
      * whether we really quit the game.
      * @return true, if this command quits the game, false otherwise.
      */
-    private boolean quit(Command command) 
+    private static boolean quit(Command command) 
     {
         if(command.hasSecondWord()) {
             System.out.println("Quit what?");

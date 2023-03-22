@@ -1,3 +1,10 @@
+Mandatory requirements : 
+	- Every class and method have javadoc comments
+	- A javadoc is generated within the doc folder
+	- Main method that works outside of BlueJ
+	- Game contains at least 15 rooms
+	- look command
+
 C requirements : 
 	- eat command
 	- command printing (help command)

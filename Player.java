@@ -287,12 +287,14 @@ public class Player
     }
     
     /**
-     * Called whenever a player moves between rooms, fully resets the player's adrenaline level and displays a message
+     * Called whenever a player moves between rooms, fully resets the player's adrenaline level if it is above zero, then displays a message
      */
     public void adrReset()
     {
-        adrenaline = 0;
-        System.out.println("Adrenaline bonus lost..");
+        if(adrenaline > 0) {
+            adrenaline = 0;
+            System.out.println("Adrenaline bonus lost..");
+        }
     }
     
     /**
