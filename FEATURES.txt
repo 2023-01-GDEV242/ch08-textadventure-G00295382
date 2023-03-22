@@ -1,0 +1,26 @@
+C requirements : 
+	- eat command
+	- command printing (help command)
+
+B requirements : 
+	- added items with descriptions and weight. Items are included in room info.
+	- rooms can hold multiple items
+	- added a player that can carry one or more objects
+
+A requirements : 
+	- locked doors
+	- rudementary health system
+	- eating changes game state
+	
+Extra Credit :
+	- collection of items as inventory
+	- allow player to take / drop item
+	- add inventory to room so it can hold multiple items
+	- add weight to items so player can only carry specified weight
+
+	- items can be held and enemies can be attacked and killed with held items
+	- enemies drop loot
+	- items have durability and break over time
+	- a random enemy attacks the player when they perform an action within a room said enemy is in
+	- hunger system, hunger drains while traversing through rooms, taking health when hunger is too low
+	- players can choose to "evade" enemy attacks to regain health, but drains hunger

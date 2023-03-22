@@ -95,6 +95,13 @@ public class Player
         Inventory.remove(item);
         hunger += 7;
         System.out.println("You have eaten a(n) " + item.getName());
+        
+        //game state changes
+        if(item.getName() == "fruit") {
+            strength();
+            System.out.println("You feel stronger");
+        }
+        
         if (hunger <= 7) {
             System.out.println("You are still hungry");
         } else {
