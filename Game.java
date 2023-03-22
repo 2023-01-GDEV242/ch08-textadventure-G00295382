@@ -1,20 +1,12 @@
 import java.util.Random;
 
 /**
- *  This class is the main class of the "World of Zuul" application. 
- *  "World of Zuul" is a very simple, text based adventure game.  Users 
- *  can walk around some scenery. That's all. It should really be extended 
- *  to make it more interesting!
- * 
- *  To play this game, create an instance of this class and call the "play"
- *  method.
- * 
  *  This main class creates and initialises all the others: it creates all
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author Bradley Risack
+ * @version 2023.03.22
  */
 
 public class Game 
@@ -33,6 +25,7 @@ public class Game
      */
     public Game() 
     {
+        
         //create items
         rock = new Item("rock", "weapon", "It's a rock", 1, 2, 0);
         spear = new Item("spear", "weapon", "It's a piece of sharpened rebar", 3, 10, 1);
@@ -59,6 +52,11 @@ public class Game
      */
     private void createRooms()
     {   
+        /**
+         * This method creates all rooms within the game and places their respective items within them
+         * @param args Unused
+         * @return Nothing
+         */
         Room outskirts, industrial, farmarrays, skyislands, subterranean, filtration, drainage, garbage, shoreline, moon, crypts, citadel, chimney, wall, pebbles, depths, ascension;
       
         // create the rooms
@@ -149,7 +147,10 @@ public class Game
      *  Main play routine.  Loops until end of play.
      */
     public void play() 
-    {            
+    {   
+        /**
+         * Starts the game
+         */
         printWelcome();
 
         // Enter the main command loop.  Here we repeatedly read commands and
@@ -303,6 +304,10 @@ public class Game
         }
     }
     
+    /**
+     * A method called by the player, attempts to consume an item from their inventory
+     * @param command the two phrases entered by the player to execute the command, in this case "eat" and the item to eat
+     */
     private void eat(Command command)
     {
         if(!command.hasSecondWord()) {
@@ -315,6 +320,10 @@ public class Game
         player.adrDecay();
     }
     
+    /**
+     * A method called by the player, attempts to pickup an item from within a room
+     * @param command the two phrases entered by the player to execute the command, in this case "pickup" and the item to pickup
+     */
     private void pickup(Command command)
     {
         Item toRemove = null;
@@ -356,6 +365,10 @@ public class Game
         enemyPhase();
     }
     
+    /**
+     * A method called by the player, attempts to print the description of the item requested by the player
+     * @param command the two phrases entered by the player to execute the command, in this case "examine" and the item to examine
+     */
     private void examine(Command command)
     {
         Item toExamine = null;
@@ -380,11 +393,19 @@ public class Game
         }
     }
     
+    /**
+     * A method called by the player, lists all items and enemies within the room they are currently in
+     * @param args Unused
+     */
     private void search()
     {
         currentRoom.searching();
     }
     
+    /**
+     * A method called by the player, attempts to have the player wield a requested item from within their inventory
+     * @param command the two phrases entered by the player to execute the command, in this case "wield" and the item to wield
+     */
     private void wield(Command command)
     {
         Item isHolding = null;
@@ -410,6 +431,12 @@ public class Game
         }
     }
     
+    /**
+     * A method called by the player, attempts to attack a requested enemy in the room using the item they are currently wielding,
+     * then causes the attacked enemy to retaliate. If the attacked enemy dies, they are removed from the room and their loot (if any) is added to the
+     * player's inventory
+     * @param command the two phrases entered by the player to execute the command, in this case "attack" and the enemy to attack
+     */
     private void attack(Command command)
     {
         Enemy toAttack = null;
@@ -464,6 +491,10 @@ public class Game
         }
     }
     
+    /**
+     * A method called by the player, attempts to remove a requested item from their inventory, and add it to whichever room they are currently in
+     * @param command the two phrases entered by the player to execute the command, in this case "drop" and the item to drop
+     */
     private void drop(Command command) {
         Item toDrop = null;
         String phrase = command.getSecondWord().toString();
@@ -494,6 +525,10 @@ public class Game
         enemyPhase();
     }
     
+    /**
+     * A method called by the player, recovers health and evades enemy attacks for one "turn" at the cost of hunger
+     * @param args Unused
+     */
     private void evade()
     {
         if(currentRoom.enemyArray().size() > 0) {
@@ -503,6 +538,10 @@ public class Game
         }
     }
     
+    /**
+     * A method called by several other methods, namely drop() and pickup(), that causes a random enemy in the room to attack the player
+     * @param args Unused
+     */
     private void enemyPhase()
     {
         //enemy attack phase : player is attacked by random enemy in the room

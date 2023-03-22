@@ -59,36 +59,61 @@ public class Room
         exits.put(direction, neighbor);
     }
     
+    /**
+     * Adds an enemy to the room's enemy array
+     * @param enemy The enemy to add to the room
+     */
     public void addEnemy(Enemy enemy)
     {
         enemies.add(enemy);
     }
     
+    /**
+     * Removes an enemy from the room's enemy array
+     * @param enemy The enemy to remove from the room
+     */
     public void removeEnemy(Enemy enemy)
     {
         enemies.remove(enemy);
     }
-
+    
+    /**
+     * Adds an item to the room's item array
+     * @param item The item to add to the room
+     */
     public void addItem(Item item)
     {
         items.add(item);
     }
     
+    /**
+     * Removes an item from the room's item array
+     * @param item The item to remove from the room
+     */
     public void removeItem(Item item)
     {
         items.remove(item);
     }
     
+    /**
+     * Locks the room and disables entry
+     */
     public void lock()
     {
         locked = true;
     }
     
+    /**
+     * Unlocks the room and allows entry
+     */
     public void unlock()
     {
         locked = false;
     }
     
+    /**
+     * Method called by the player, displays all items and enemies currently within the room
+     */
     public void searching()
     {
         System.out.println("After searching the room, you find it contains : ");
@@ -101,12 +126,18 @@ public class Room
         }
     }
     
+    /**
+     * @return ArrayList<Item> Returns a copy of the room's item array
+     */
     //send room item array into method for other classes
     public ArrayList<Item> itemArray()
     {
         return items;
     }
     
+    /**
+     * @return ArrayList<Enemy> Returns a copy of the room's enemy array
+     */
     //same for enemy array
     public ArrayList<Enemy> enemyArray()
     {
@@ -148,6 +179,9 @@ public class Room
         return returnString;
     }
     
+    /**
+     * @return boolean Returns if the room is locked
+     */
     public boolean getLocked()
     {
         return locked;
