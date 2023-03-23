@@ -31,3 +31,11 @@ Extra Credit :
 	- a random enemy attacks the player when they perform an action within a room said enemy is in
 	- hunger system, hunger drains while traversing through rooms, taking health when hunger is too low
 	- players can choose to "evade" enemy attacks to regain health, but drains hunger
+
+
+IMPORTANT NOTE : Unfortunately I happened to overlook the section in the assignment that stated all features must be committed seperately.
+There are many features here that are individually committed but there are many that are not. Still, every feature listed here IS included in the game.
+
+I currently have no idea how to go about going back and re-adding then committing every single feature individually, so I have not done that here.
+
+I am aware this will likely dock many points from this project's final grade but I simply do not have enough time to redo everything.
