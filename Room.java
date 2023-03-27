@@ -96,6 +96,14 @@ public class Room
     }
     
     /**
+     * Clears all items from the room's item array, called when resetting the game
+     */
+    public void clearRoom() {
+        items.clear();
+        enemies.clear();
+    }
+    
+    /**
      * Locks the room and disables entry
      */
     public void lock()

@@ -13,6 +13,10 @@ public class Enemy
     private int health;
     private int damage;
     private ArrayList<Item> loot;
+    private String effect;
+    private int effectduration;
+    private int evaderate;
+    private int evademult;
     
     /**
      * Initialize all fields based on the constructor
@@ -21,13 +25,16 @@ public class Enemy
      * @param health The health of the enemy
      * @param damage The amount of damage the enemy deals
      */
-    public Enemy(String name, String description, int health, int damage)
+    public Enemy(String name, String description, int health, int damage, int evaderate, int evademult)
     {
         this.name = name;
         this.description = description;
         this.health = health;
         this.damage = damage;
+        this.evaderate = evaderate;
+        this.evademult = evademult;
         
+        effect = "";
         loot = new ArrayList<>();
     }
     
@@ -38,6 +45,21 @@ public class Enemy
     public void addLoot(Item item)
     {
         loot.add(item);
+    }
+    
+    /**
+     * Sets the active effect of the enemy
+     * @param String the name of the effect
+     */
+    public void effectDecay()
+    {
+        if(effect != "") {
+            effectduration -= 1;
+            if(effectduration <= 0) {
+                System.out.println(getName() + " is no longer " + effect);
+                effect = "";
+            }
+        }
     }
     
     /**
@@ -81,6 +103,30 @@ public class Enemy
     }
     
     /**
+     * @return String the effect the enemy has
+     */
+    public String getEffect()
+    {
+        return effect;
+    }
+    
+    /**
+     * @return the evasion rate of the enemy
+     */
+    public int getEvade()
+    {
+        return evaderate;
+    }
+    
+    /**
+     * @return the evasion multiplier of the enemy
+     */
+    public int getEvadeMult()
+    {
+        return evademult;
+    }
+    
+    /**
      * Called by the player, deals damage to the enemy based on the value of the getDamage() method of the item the player is currently holding
      * @param item The item the enemy was attacked with, otherwise, the item the player is currently holding
      * @param int The player's current adrenaline level, modifies the amount of damage dealt to the enemy
@@ -88,7 +134,14 @@ public class Enemy
     public void attacked(Item item, int adr)
     {
         int pdamage = item.getDamage() + adr;
+        if(effect == "confused") {
+            pdamage = (item.getDamage() * 2) + adr;
+        }
         health -= pdamage;
         System.out.println("The " + name + " lost " + pdamage + " hitpoints!");
+        if(item.getName() == "rock") {
+            effect = "confused";
+            effectduration = 2;
+        }
     }
 }

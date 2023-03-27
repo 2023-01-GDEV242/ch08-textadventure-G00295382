@@ -2,6 +2,7 @@ Mandatory requirements :
 	- Every class and method have javadoc comments
 	- A javadoc is generated within the doc folder
 	- Main method that works outside of BlueJ
+		- And can still be run in BlueJ by instantiating the Game class and invoking play() method
 	- Game contains at least 15 rooms
 	- look command
 
@@ -26,11 +27,16 @@ Extra Credit :
 	- add weight to items so player can only carry specified weight
 
 	- items can be held and enemies can be attacked and killed with held items
-	- enemies drop loot
+	- enemies drop loot when they die
 	- items have durability and break over time
 	- a random enemy attacks the player when they perform an action within a room said enemy is in
-	- hunger system, hunger drains while traversing through rooms, taking health when hunger is too low
+	- hunger system, hunger drains while traversing through rooms, taking damage when hunger is too low
 	- players can choose to "evade" enemy attacks to regain health, but drains hunger
+
+	- enemies each have a unique chance of evading player attacks, and gain a varying damage multiplier for their next attack if they do
+	- attacking enemies with a rock leaves them in a confused state, unable to attack or dodge player attacks for a period of time
+	- players cannot leave rooms while there are enemies still within them
+	- the player can die when they reach 0 health, completely resetting the game state
 
 
 IMPORTANT NOTE : Unfortunately I happened to overlook the section in the assignment that stated all features must be committed seperately.

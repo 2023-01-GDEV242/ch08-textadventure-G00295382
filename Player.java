@@ -24,7 +24,7 @@ public class Player
         Inventory = new ArrayList<Item>();
         holding = null;
         hunger = 15;
-        health = 5;
+        health = 10;
         wc = 2;
         karma = 1;
         adrenaline = 0;
@@ -55,7 +55,7 @@ public class Player
     {
         System.out.println("Your inventory contains : ");
         for(Item item : Inventory) {
-            System.out.println(item.getName());
+            System.out.println(item.getName() + " (" + item.getType() + ")");
         }
         if(Inventory.size() == 0) {
             System.out.println("nothing");
@@ -137,6 +137,9 @@ public class Player
         if(item.getName() == "fruit") {
             strength();
             System.out.println("You feel stronger");
+        } else if(item.getName() == "karmaflower") {
+            maxKarma();
+            System.out.println("A powerful force flows through you.\n\nYou are ready to ascend.\n");
         }
         
         if (hunger <= 7) {
@@ -252,6 +255,23 @@ public class Player
     {
         health -= enemy.getDamage();
         System.out.println("Attacked by " + enemy.getName() + "! You lost " + enemy.getDamage() + " hitpoints!");
+        System.out.println("Health remaining : " + health);
+    }
+    
+    /**
+     * Called by the attack method within the Game class, reduces player health by the amount returned by enemy.getDamage()
+     * @param enemy The enemy to attack the player, a boolean which tells if the enemy has evaded the player's last attack
+     */
+    public void attackedBy(Enemy enemy, boolean evaded)
+    {
+        int damage = 0;
+        damage = enemy.getDamage();
+        // deal a second instance of damage if the enemy evaded the player's last attack
+        if(evaded == true) {
+            damage *= enemy.getEvadeMult();
+        }
+        System.out.println("Attacked by " + enemy.getName() + "! You lost " + damage + " hitpoints!");
+        System.out.println("Health remaining : " + health);
     }
     
     /**
@@ -311,5 +331,25 @@ public class Player
             System.out.println("Your " + item.getName() + " broke!");
             lose(item);
         }
+    }
+    
+    /**
+     * @return int Returns the player's health value
+     */
+    public int getHealth() {
+        return health;
+    }
+    
+    /**
+     * Called when the player dies, resets player inventory and private fields
+     */
+    public void reset() {
+        Inventory.clear();
+        holding = null;
+        hunger = 15;
+        health = 10;
+        wc = 2;
+        karma = 1;
+        adrenaline = 0;
     }
 }

@@ -17,24 +17,38 @@ public class Game
     static Random rand;
     //define items as class variables so they can be used between methods
     static Item rock, spear, fruit, batflycorpse;
-    static Item silverpearl;
-    static Enemy batfly, greenlizard, bluelizard;
+    static Item pearl, silverpearl, tealpearl, goldpearl, karmaflower;
+    static Enemy batfly, greenlizard, greenlizard2, bluelizard, vulture, kingvulture;
+    
+    static Room outskirts, industrial, farmarrays, skyislands, subterranean, filtration, drainage, garbage, shoreline, moon, crypts, citadel, chimney, wall, pebbles, depths, ascension, sea;
     
     public static void main(String[] args){
         //create items
-        rock = new Item("rock", "weapon", "It's a rock", 1, 2, 0);
+        rock = new Item("rock", "weapon", "It's a small rock, temporarily stuns enemies", 1, 2, 0);
         spear = new Item("spear", "weapon", "It's a piece of sharpened rebar", 3, 10, 1);
         fruit = new Item("fruit", "edible", "lore", 0, 0, 0);
-        batflycorpse = new Item("batfly", "edible", "lore", 0, 0, 0);
+        batflycorpse = new Item("batflycorpse", "edible", "lore", 0, 0, 0);
         
-        silverpearl = new Item("silverpearl", "collectible", "lore", 0, 0, 0);
+        pearl = new Item("pearl", "collectible", "It's an image of a single grey cloud, hovering above a surface of white clouds under a deep blue sky.", 0, 0, 0);
         
-        //create enemies
-        batfly = new Enemy("batfly", "looks tasty", 1, 0);
+        silverpearl = new Item("silverpearl", "collectible", "Its entire memory is filled with a mantra repeated... 5061 times - and then a termination verse.", 0, 0, 0);
+        
+        tealpearl = new Item("tealpearl", "collectible", "It's the blueprint for a Void Fluid filtration system.", 0, 0, 0);
+        
+        goldpearl = new Item("goldpearl", "collectible", "This information is illegal. Please dispose of this pearl immediately.", 0, 0, 0);
+        
+        karmaflower = new Item("karmaflower", "edible", "This is a hallucinogenic plant, it momentarily enables a creature to let go if its carnal self, and to contact the selves of other planes - dreams, memories, imagined worlds.", 0, 0, 0);
+
+        
+        //create enemies (params : health, damage, evaderate, evademult)
+        batfly = new Enemy("batfly", "looks tasty", 1, 0, 5, 1);
         batfly.addLoot(batflycorpse);
-        //batfly.addLoot(batflycorpse);
-        greenlizard = new Enemy("greenlizard", "dont mess with them", 10, 1);
-        bluelizard = new Enemy("bluelizard", "quite vulnerable", 3, 2);
+        greenlizard = new Enemy("greenlizard", "dont mess with them", 6, 1, 2, 2);
+        greenlizard2 = new Enemy("greenlizard2", "dont mess with them", 6, 1, 2, 2);
+        bluelizard = new Enemy("bluelizard", "quite vulnerable", 2, 2, 3, 2);
+        
+        vulture = new Enemy("vulture", "excellent predators", 6, 2, 10, 3);
+        kingvulture = new Enemy("kingvulture", "king of vultures", 15, 3, 15, 3);
         
         createRooms();
         parser = new Parser();
@@ -47,29 +61,42 @@ public class Game
     /**
      * Create the game and initialise its internal map.
      */
-    /*public Game() 
+    public Game() 
     {
-        
         //create items
-        rock = new Item("rock", "weapon", "It's a rock", 1, 2, 0);
+        rock = new Item("rock", "weapon", "It's a small rock, temporarily stuns enemies", 1, 2, 0);
         spear = new Item("spear", "weapon", "It's a piece of sharpened rebar", 3, 10, 1);
         fruit = new Item("fruit", "edible", "lore", 0, 0, 0);
-        batflycorpse = new Item("batfly", "edible", "lore", 0, 0, 0);
+        batflycorpse = new Item("batflycorpse", "edible", "lore", 0, 0, 0);
         
-        silverpearl = new Item("silverpearl", "collectible", "lore", 0, 0, 0);
+        pearl = new Item("pearl", "collectible", "It's an image of a single grey cloud, hovering above a surface of white clouds under a deep blue sky.", 0, 0, 0);
         
-        //create enemies
-        batfly = new Enemy("batfly", "looks tasty", 1, 0);
+        silverpearl = new Item("silverpearl", "collectible", "Its entire memory is filled with a mantra repeated... 5061 times - and then a termination verse.", 0, 0, 0);
+        
+        tealpearl = new Item("tealpearl", "collectible", "It's the blueprint for a Void Fluid filtration system.", 0, 0, 0);
+        
+        goldpearl = new Item("goldpearl", "collectible", "This information is illegal. Please dispose of this pearl immediately.", 0, 0, 0);
+        
+        karmaflower = new Item("karmaflower", "edible", "This is a hallucinogenic plant, it momentarily enables a creature to let go if its carnal self, and to contact the selves of other planes - dreams, memories, imagined worlds.", 0, 0, 0);
+
+        
+        //create enemies (params : health, damage, evaderate, evademult)
+        batfly = new Enemy("batfly", "looks tasty", 1, 0, 5, 1);
         batfly.addLoot(batflycorpse);
-        //batfly.addLoot(batflycorpse);
-        greenlizard = new Enemy("greenlizard", "dont mess with them", 10, 1);
-        bluelizard = new Enemy("bluelizard", "quite vulnerable", 3, 2);
+        greenlizard = new Enemy("greenlizard", "dont mess with them", 6, 1, 2, 2);
+        greenlizard2 = new Enemy("greenlizard2", "dont mess with them", 6, 1, 2, 2);
+        bluelizard = new Enemy("bluelizard", "quite vulnerable", 2, 2, 3, 2);
+        
+        vulture = new Enemy("vulture", "excellent predators", 6, 2, 10, 3);
+        kingvulture = new Enemy("kingvulture", "king of vultures", 15, 3, 15, 3);
         
         createRooms();
         parser = new Parser();
         player = new Player();
         rand = new Random();
-    }*/
+        
+        play();
+    }
 
     /**
      * Create all the rooms and link their exits together.
@@ -81,26 +108,26 @@ public class Game
          * @param args Unused
          * @return Nothing
          */
-        Room outskirts, industrial, farmarrays, skyislands, subterranean, filtration, drainage, garbage, shoreline, moon, crypts, citadel, chimney, wall, pebbles, depths, ascension;
       
         // create the rooms
-        outskirts = new Room("You find yourself in a desolate, grassy city.");
-        industrial = new Room("A white room");
-        farmarrays = new Room("A white room");
-        skyislands = new Room("A white room");
-        subterranean = new Room("A white room");
-        filtration = new Room("A white room");
-        drainage = new Room("A white room");
-        garbage = new Room("A white room");
-        shoreline = new Room("A white room");
-        moon = new Room("A white room");
-        crypts = new Room("A white room");
-        citadel = new Room("A white room");
-        chimney = new Room("A white room");
-        wall = new Room("A white room");
-        pebbles = new Room("A white room");
-        depths = new Room("A white room", true);
-        ascension = new Room("room");
+        outskirts = new Room("You find yourself in a desolate, grassy city");
+        industrial = new Room("As you step into the industrial complex, the deafening roar of machinery and acrid scent of metal fill your senses, while towering steel beams and pipes stretch up into the darkness above");
+        farmarrays = new Room("As you step into the farm arrays, you are greeted by neatly arranged rows of crops stretching out before you, with the distant hum of machinery filling the air");
+        skyislands = new Room("You find yourself surrounded by floating land masses, shrouded in mist and connected by narrow bridges, with the distant sound of rushing waterfalls echoing in the air");
+        subterranean = new Room("As you descend into the subterranean depths, the air grows damp and musty, the only sources of light being the flickering torches lining the rough-hewn walls");
+        filtration = new Room("You find yourself standing in a dimly lit room filled with towering machines and pipes, the sound of rushing water echoing throughout as you realize you have entered the filtration system");
+        drainage = new Room("You find yourself in knee-deep murky water, surrounded by rusted pipes and discarded debris in the dimly-lit drainage system");
+        garbage = new Room("You find yourself surrounded by mounds of putrid garbage, emitting a nauseating stench and sttracting swarms of flies");
+        shoreline = new Room("You find yourself standing on the sandy shores of a crystal clear lake, surrounded by tall trees and the distant sound of rushing waterfalls");
+        moon = new Room("The remains of Moon's complex. You find her lifeless in the center of the room, with bright light pouring in from the many holes in the overgrown walls");
+        crypts = new Room("As you enter the memory crypts, the low hum of the massive superstructure above fills the air, while rows of glowing data banks line the walls around you");
+        citadel = new Room("As you step into the shaded citadel, the cool dampness of the stone walls envelops you, and the only light filtering through the high arched windows is a dim, eerie glow");
+        chimney = new Room("You stand in the shadow of a towering chimney, its canopy looming over you as if to shield you from the industrial wasteland beyond");
+        wall = new Room("You stand before the towering side of a massive iterator superstructure, known as 'The Wall', its surface seemingly endless as it dissapears into the distance above and below you");
+        pebbles = new Room("An empty room, filled with decaying circuitry and a strange, blue, pulsating mass. A body lay lifeless on the floor.");
+        depths = new Room("As you enter the depths, you find yourself in a dimly lit cavern with ominous shadows looming in the distance. Your vision becomes increasingly distorted as you travel deeper", true);
+        ascension = new Room("Barely able to see, you stand before a massive, seemingly bottomless sea of void fluid");
+        sea = new Room("You jump headfirst into the mysterious fluid, and begin to ascend towards a higher plane");
         
         // initialise room exits
         outskirts.setExit("left", farmarrays);
@@ -151,18 +178,30 @@ public class Game
         wall.setExit("left", chimney);
         wall.setExit("up", pebbles);
         
+        depths.setExit("down", ascension);
+        
+        ascension.setExit("down", sea);
+        
         pebbles.setExit("left", wall);
         
         depths.setExit("down", ascension);
         
         
-        // add items
-        outskirts.addItem(silverpearl);
+        // add items + enemies
+        outskirts.addItem(spear);
         outskirts.addItem(rock);
         
-        // add enemies
         outskirts.addEnemy(greenlizard);
-        outskirts.addEnemy(bluelizard);
+        outskirts.addEnemy(greenlizard2);
+        
+        subterranean.addItem(tealpearl);
+        
+        chimney.addItem(goldpearl);
+        
+        moon.addItem(silverpearl);
+        
+        pebbles.addItem(karmaflower);
+        pebbles.addItem(pearl);
 
         currentRoom = outskirts;  // start game outside
     }
@@ -302,8 +341,9 @@ public class Game
 
         // Try to leave current room.
         Room nextRoom = currentRoom.getExit(direction);
-
-        if (nextRoom == null) {
+        if(currentRoom.enemyArray().size() > 0) {
+            System.out.println("You can't escape!");
+        } else if (nextRoom == null) {
             System.out.println("There is no door!");
         }
         else {
@@ -368,7 +408,11 @@ public class Game
                 {
                     player.obtain(pitem);
                     player.adrDecay();
-                    System.out.println("Picked up a(n) " + pitem.getName());
+                    System.out.println("Picked up a(n) " + pitem.getName() + " (" + pitem.getType() + ")");
+                    if(pitem.getType() == "weapon") {
+                        player.hold(pitem);
+                        System.out.println("You are now wielding the " + pitem.getName());
+                    }
                     toRemove = pitem;
                 } else {
                     System.out.println("The " + pitem.getName() + " is too heavy for you");
@@ -395,25 +439,29 @@ public class Game
      */
     private static void examine(Command command)
     {
-        Item toExamine = null;
-        
-        if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
-            System.out.println("Examine what?");
-            return;
-        }
-        
-        String phrase = command.getSecondWord().toString();
-        
-        for(Item eitem : player.inventoryArray()) {
-            if(eitem.getName().equals(phrase)) {
-                System.out.println(eitem.getDescription());
-                toExamine = eitem;
+        if(currentRoom.enemyArray().size() <= 0) {
+            Item toExamine = null;
+            
+            if(!command.hasSecondWord()) {
+                // if there is no second word, we don't know where to go...
+                System.out.println("Examine what?");
+                return;
             }
-        }
-        
-        if (toExamine == null) {
-            System.out.println("You could not find a(n) " + phrase + " in your inventory");
+            
+            String phrase = command.getSecondWord().toString();
+            
+            for(Item eitem : player.inventoryArray()) {
+                if(eitem.getName().equals(phrase)) {
+                    System.out.println(eitem.getDescription());
+                    toExamine = eitem;
+                }
+            }
+            
+            if (toExamine == null) {
+                System.out.println("You could not find a(n) " + phrase + " in your inventory");
+            }
+        } else {
+            System.out.println("You can't do that now!");
         }
     }
     
@@ -464,6 +512,7 @@ public class Game
     private static void attack(Command command)
     {
         Enemy toAttack = null;
+        boolean evaded = false;
         String phrase = command.getSecondWord().toString();
         
         if(!command.hasSecondWord()) {
@@ -476,15 +525,29 @@ public class Game
             if(enemy.getName().equals(phrase)) {
                 if(player.getHolding() != null)
                 {
-                    //attack enemy
-                    enemy.attacked(player.getHolding(), player.adrLevel());
-                    toAttack = enemy;
-                    //damage player weapon
-                    player.damageItem(player.getHolding());
+                    int rand2 = (rand.nextInt(20) + 1);
+                    if(rand2 > enemy.getEvade()) {
+                        enemy.attacked(player.getHolding(), player.adrLevel());
+                        toAttack = enemy;
+                        //damage player weapon
+                        player.damageItem(player.getHolding());
+                    } else {
+                        System.out.println("\nThe enemy evaded the attack!\n");
+                        evaded = true;
+                    }
+                    player.hungry();
                     player.adrDecay();
+                    enemy.effectDecay();
                     
                     //enemy attack phase
-                    player.attackedBy(enemy);
+                    if(enemy.getHealth() > 0 && enemy.getEffect() != "confused") {
+                        player.attackedBy(enemy, evaded);
+                    } else if(enemy.getEffect() == "confused") {
+                        System.out.println("The enemy is confused!");
+                    }
+                    if(player.getHealth() <= 0) {
+                        reset();
+                    }
                     //can't have multiple enemies with the same name in the same room without return statement here
                     //but that feature was janky anyway
                     //return;
@@ -498,9 +561,9 @@ public class Game
             //fixed this by removing return in first if statement
         }
         
-        if (toAttack == null) {
+        if (toAttack == null && evaded == false) {
             System.out.println("You could not find a(n) " + phrase + " in the current room");
-        } else if (toAttack.getHealth() <= 0) { //kill enemy if 0 health
+        } else if (toAttack != null && toAttack.getHealth() <= 0) { //kill enemy if 0 health
             System.out.println("The " + toAttack.getName() + " has died!");
             //if enemy has loot, give loot
             if(toAttack.listLoot().size() > 0) {
@@ -569,8 +632,68 @@ public class Game
     private static void enemyPhase()
     {
         //enemy attack phase : player is attacked by random enemy in the room
-        int rand1 = rand.nextInt(currentRoom.enemyArray().size());
-        player.attackedBy(currentRoom.enemyArray().get(rand1));
+        if(currentRoom.enemyArray().size() > 0) {
+            int rand1 = rand.nextInt(currentRoom.enemyArray().size());
+            Enemy toAttack = currentRoom.enemyArray().get(rand1);
+            for(Enemy enemy : currentRoom.enemyArray()) {
+                enemy.effectDecay();
+            }
+            if(toAttack.getEffect() != "confused") {
+                player.attackedBy(toAttack);
+            } else if(toAttack.getEffect() == "confused") {
+                System.out.println("The enemy is confused!");
+            }
+            if(player.getHealth() <= 0) {
+                reset();
+            }
+        }
+    }
+    
+    /**
+     * Called when the player dies, resets the player's inventory and all room data
+     * @param args Unused
+     */
+    private static void reset() {
+        //display death message
+        System.out.println("You died!");
+        System.out.println("Game reset");
+        
+        //reset player
+        player.reset();
+        
+        //clear room items
+        outskirts.clearRoom();
+        industrial.clearRoom();
+        farmarrays.clearRoom();
+        skyislands.clearRoom();
+        subterranean.clearRoom();
+        filtration.clearRoom();
+        drainage.clearRoom();
+        garbage.clearRoom();
+        shoreline.clearRoom();
+        moon.clearRoom();
+        crypts.clearRoom();
+        citadel.clearRoom();
+        chimney.clearRoom();
+        wall.clearRoom();
+        pebbles.clearRoom();
+        depths.clearRoom();
+        ascension.clearRoom();
+        
+        //re-add things
+        outskirts.addItem(rock);
+        
+        outskirts.addItem(silverpearl);
+        
+        pebbles.addItem(karmaflower);
+        pebbles.addItem(pearl);
+        
+        // add enemies
+        outskirts.addEnemy(greenlizard);
+        outskirts.addEnemy(bluelizard);
+        
+        //reset player room
+        currentRoom = outskirts;
     }
 
     /** 
